@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+    <script src="http://workadventure.localhost/iframe_api.js" >
+
+    </script>
+    <script type="text/javascript">
+        console.log("SCRIPT");     
+        // Wait for the page to load first
+        window.onload = function() {
+
+            //Get a reference to the link on the page
+            // with an id of "mylink"
+            var a = document.getElementById("link1");
+            console.log("LINK IS " + a);
+
+            //Set code to run when the link is clicked
+            // by assigning a function to "onclick"
+            a.onclick = function() {   
+                console.log("CLICKED");
+                WA.nav.goToRoom("/_/muth01282h/localhost:8081/maps/map-1.json#default");
+                console.log("CLICKED");
+                return false;
+          }
+        }
+    </script>
+</head>
+<html>
+    <body>
+        <p style="color:white;">This is an example of a simple HTML page with one paragraph.</p>
+
+        <a 
+        id="link1">
+            <image 
+            src="../maps/map-1.png" 
+            alt="map 1" 
+            width="300"
+            height="300">
+            </image>
+        </a>
+    </body>
+</html>
