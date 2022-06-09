@@ -3184,7 +3184,7 @@
          "height":128,
          "id":52,
          "name":"blocks",
-         "opacity":0.78,
+         "opacity":0,
          "type":"tilelayer",
          "visible":true,
          "width":128,
