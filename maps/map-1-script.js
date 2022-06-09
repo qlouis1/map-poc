@@ -17,6 +17,8 @@ WA.onInit().then(() => {
     WA.room.setTiles([
         { x: 17, y: 46, tile: 3, layer: blockLayerName },
         { x: 17, y: 47, tile: 3, layer: blockLayerName },
+        { x: 13, y: 46, tile: 3, layer: blockLayerName },
+        { x: 13, y: 47, tile: 3, layer: blockLayerName },
     ]);
 
 })
@@ -65,17 +67,6 @@ const bedSub = WA.room.onEnterLayer(bedscriptLayerName).subscribe(() => {
 
             WA.player.moveTo(560, 1496, 6).then((result) => {
                 WA.player.moveTo(560, 1512, 6).then((result) => {
-                    /*WA.room.setTiles([
-                        { x: 16, y: 45, tile: 0, layer: bedscriptLayerName },
-                        { x: 17, y: 45, tile: 0, layer: bedscriptLayerName },
-                        { x: 18, y: 45, tile: 0, layer: bedscriptLayerName },
-                        { x: 16, y: 46, tile: 0, layer: bedscriptLayerName },
-                        { x: 18, y: 46, tile: 0, layer: bedscriptLayerName },
-                        { x: 16, y: 47, tile: 0, layer: bedscriptLayerName },
-                        { x: 18, y: 47, tile: 0, layer: bedscriptLayerName },
-                        { x: 16, y: 48, tile: 0, layer: bedscriptLayerName },
-                        { x: 18, y: 48, tile: 0, layer: bedscriptLayerName },
-                    ]);*/
                     bedExitMessage = WA.ui.displayActionMessage({
                         message: "press space to leave the bed",
                         callback: () => {
@@ -115,3 +106,14 @@ WA.room.onLeaveLayer(bedscriptLayerName).subscribe(() => {
     bedTriggerMessage.remove();
 
 });
+
+/**
+ * Custom menus
+ */
+
+ const menu = WA.ui.registerMenuCommand("Retour a l'entrée",
+ {
+     callback: () => {
+         WA.nav.goToRoom("map-1.json#default");
+     }
+ })
