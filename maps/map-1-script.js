@@ -8,6 +8,7 @@ console.log("==== Script map-1-script.js");
 const blockLayerName = "blocks";
 const bedscriptLayerName = "Scripts/bedScript";
 const confroomLayerName = "Scripts/confroom";
+
 /**
  * Some data is only available after the map il fully loaded
  */
@@ -42,11 +43,13 @@ WA.room.onLeaveLayer("Scripts/roofScript").subscribe(() => {
 const confRoomSubscriber = WA.room.onEnterLayer(confroomLayerName).subscribe(() => {
     console.log("ENTER LAYER CONFROOM");
     WA.camera.set(1776, 1296, 928, 928, true, true);
+    WA.controls.disablePlayerProximityMeeting();
 });
 
 WA.room.onLeaveLayer(confroomLayerName).subscribe(() => {
     console.log("EXIT LAYER CONFROOM");
     WA.camera.followPlayer(true);
+    WA.controls.restorePlayerProximityMeeting();
 });
 
 /**
@@ -111,9 +114,83 @@ WA.room.onLeaveLayer(bedscriptLayerName).subscribe(() => {
  * Custom menus
  */
 
- const menu = WA.ui.registerMenuCommand("Retour a l'entrée",
- {
-     callback: () => {
-         WA.nav.goToRoom("map-1.json#default");
-     }
- })
+const menu = WA.ui.registerMenuCommand("Retour a l'entrée",
+    {
+        callback: () => {
+            WA.nav.goToRoom("map-1.json#default");
+        }
+    });
+
+/**
+ * Clock
+ */
+let clockPopup;
+WA.room.onEnterLayer("Scripts/clockScript").subscribe(() => {
+    let t = new Date();
+    t = t.getHours() + ":" + t.getMinutes();
+    clockPopup = WA.ui.openPopup("clockPopup", t, []);
+});
+
+WA.room.onLeaveLayer("Scripts/clockScript").subscribe(() => {
+
+    clockPopup.close();
+});
+
+document.addEventListener('keydown', (event) => {
+    console.log("keyevent");
+    const k = event.key;
+    console.log(k);
+}, false);
+/**
+ * Jeu du pendu
+ */
+
+let hangmanPopup;
+WA.room.onEnterLayer("Scripts/hangmanScript").subscribe(() => {
+
+    hangmanPopup = WA.ui.openPopup("hangmanPopup", "Hangman game !", [{
+        label: "Start",
+        className: "primary",
+        callback: (popup) => {
+            WA.state.saveVariable("hg_state", "started").catch(e => console.error("Error saving variable", e));
+            popup.close();
+        }
+    }]);
+
+    document.addEventListener('keydown', (event) => {
+        console.log("keyevent");
+        const k = event.key;
+        console.log(k);
+    }, false);
+});
+
+WA.room.onLeaveLayer("Scripts/hangmanScript").subscribe(() => {
+
+    hangmanPopup.close();
+});
+
+WA.state.onVariableChange('hg_state').subscribe((value) => {
+    console.log("HG STATE CHANGED:", value);
+    switch (value) {
+        case "started":
+            console.log("HG is started");
+            // now we want the user to prompt his word to play with
+            // use the chat, luke
+            //let hangmanPopup2 = WA.ui.openPopup("hangmanPopup", "Entrez le mot à faire deviner dans le chat", []);
+            const hgform = WA.ui.website.open({
+                url: "hangmanForm.html",
+                position: {
+                    vertical: "middle",
+                    horizontal: "middle",
+                },
+                size: {
+                    height: "50vh",
+                    width: "50vw",
+                },
+            });
+            break;
+
+        default:
+            break;
+    }
+});
