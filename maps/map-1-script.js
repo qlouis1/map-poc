@@ -18,8 +18,6 @@ WA.onInit().then(() => {
     WA.room.setTiles([
         { x: 17, y: 46, tile: 3, layer: blockLayerName },
         { x: 17, y: 47, tile: 3, layer: blockLayerName },
-        { x: 13, y: 46, tile: 3, layer: blockLayerName },
-        { x: 13, y: 47, tile: 3, layer: blockLayerName },
     ]);
 
 })
