@@ -4073,6 +4073,28 @@
                  "width":256,
                  "x":1920,
                  "y":3808
+                }, 
+                {
+                 "height":224,
+                 "id":34,
+                 "name":"tuto",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":334.666666666667,
+                 "x":1664,
+                 "y":2064
+                }, 
+                {
+                 "height":0,
+                 "id":35,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1450,
+                 "y":1742
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -4925,7 +4947,7 @@
          "y":0
         }],
  "nextlayerid":109,
- "nextobjectid":34,
+ "nextobjectid":36,
  "orientation":"orthogonal",
  "properties":[
         {
