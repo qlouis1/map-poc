@@ -22,6 +22,9 @@ WA.onInit().then(() => {
         { x: 13, y: 47, tile: 3, layer: blockLayerName },
     ]);
 
+
+
+
 })
 
 const roofLayerSubscriber = WA.room.onEnterLayer("Scripts/roofScript").subscribe(() => {
@@ -141,10 +144,13 @@ document.addEventListener('keydown', (event) => {
     const k = event.key;
     console.log(k);
 }, false);
+
+
 /**
  * Jeu du pendu
+ * marche po comme je veux >:(
  */
-
+/**
 let hangmanPopup;
 WA.room.onEnterLayer("Scripts/hangmanScript").subscribe(() => {
 
@@ -193,4 +199,63 @@ WA.state.onVariableChange('hg_state').subscribe((value) => {
         default:
             break;
     }
+});
+*/
+
+/**
+ * Boat script
+ * 
+ */
+
+const weekday = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+const month = ["Janvier", "Fevrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre"];
+let boatPopup;
+WA.room.onEnterLayer("Scripts/boatScript").subscribe(() => {
+    let d = new Date();
+    d.setDate(d.getDate() + 1);
+    let msg = "Le prochain bateau part le " + weekday[d.getDay()] + " " + d.getDate() + " " + month[d.getMonth()] + " à " + d.getHours() + " heures. ";
+
+    boatPopup = WA.ui.openPopup("boatPopup", msg, []);
+});
+
+WA.room.onLeaveLayer("Scripts/boatScript").subscribe(() => {
+
+    boatPopup.close();
+});
+
+/**
+ * Room names
+ */
+const names = {
+    "ASN": "Pôle ASN",
+    "RSSI": "Pôle RSSI",
+    "REU": "Salle de réunion",
+    "CONF": "Salle de conférence",
+    "INFRA": "Pôle Infra",
+    "DSI": "DSI",
+    "PMO": "Pôle PMO",
+    "ID": "Pôle ID",
+    "PAUSE": "Salle de pause",
+    "PROXI": "Pôle Proxi",
+    "ADMIN": "Pôle Admin",
+    "REPOS": "Salle de repos",
+    "CLASSE": "Salle de classe"
+};
+
+// I love js (no)
+let nmsg;
+Object.keys(names).forEach(key => {
+    //console.log("item " + key + " is " + names[key]);
+    WA.room.onEnterLayer("Info/" + key).subscribe(() => {
+        //console.log("in " + key);
+        nmsg = WA.ui.displayActionMessage({
+            message: names[key],
+            callback: () => { },
+            type: "message"
+        });
+    });
+
+    WA.room.onLeaveLayer("Info/" + key).subscribe(() => {
+        nmsg.remove();
+    });
 });
