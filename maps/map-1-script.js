@@ -22,24 +22,23 @@ WA.onInit().then(() => {
         { x: 13, y: 47, tile: 3, layer: blockLayerName },
     ]);
 
-/**
- * TUTO
- */
-WA.ui.openPopup("tuto", "Bienvenue dans Workadventure ! Utilisez les touches fléchées pour vous déplacer.",  [{
-    label: "C'est parti !",
-    className: "primary",
-    callback: (popup) => {
-        popup.close();
-        WA.ui.openPopup("tuto", "Vous pouvez à tout moment revenir à l'entrée avec le bouton présent dans le menu, en haut à gauche de votre écran.",  [{
-            label: "D'accord !",
-            className: "primary",
-            callback: (popup) => {
-                popup.close();
-        
-            }
-        }]);
-    }
-}]);
+    /**
+     * TUTO
+     */
+    WA.ui.openPopup("tuto", "Bienvenue dans Workadventure ! Utilisez les touches fléchées pour vous déplacer.", [{
+        label: "C'est parti !",
+        className: "primary",
+        callback: (popup) => {
+            popup.close();
+            WA.ui.openPopup("tuto", "Vous pouvez à tout moment revenir à l'entrée avec le bouton présent dans le menu, en haut à gauche de votre écran.", [{
+                label: "D'accord !",
+                className: "primary",
+                callback: (popup) => {
+                    popup.close();
+                }
+            }]);
+        }
+    }]);
 })
 
 const roofLayerSubscriber = WA.room.onEnterLayer("Scripts/roofScript").subscribe(() => {
