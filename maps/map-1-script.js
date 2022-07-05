@@ -7,6 +7,7 @@
 console.log("==== Script map-1-script.js");
 const blockLayerName = "blocks";
 const bedscriptLayerName = "Scripts/bedScript";
+const bedscriptOOSLayerName = "Scripts/bedScriptOOS";
 const confroomLayerName = "Scripts/confroom";
 
 /**
@@ -18,19 +19,19 @@ WA.onInit().then(() => {
     WA.room.setTiles([
         { x: 17, y: 46, tile: 3, layer: blockLayerName },
         { x: 17, y: 47, tile: 3, layer: blockLayerName },
-        { x: 13, y: 46, tile: 3, layer: blockLayerName },
-        { x: 13, y: 47, tile: 3, layer: blockLayerName },
     ]);
 
     /**
      * TUTO
      */
-    WA.ui.openPopup("tuto", "Bienvenue dans Workadventure ! Utilisez les touches fléchées pour vous déplacer.", [{
+    let tt1;
+    let tt2;
+    tt1 = WA.ui.openPopup("tuto", "Bienvenue dans Workadventure ! Utilisez les touches fléchées pour vous déplacer.", [{
         label: "C'est parti !",
         className: "primary",
         callback: (popup) => {
             popup.close();
-            WA.ui.openPopup("tuto", "Vous pouvez à tout moment revenir à l'entrée avec le bouton présent dans le menu, en haut à gauche de votre écran.", [{
+            tt2 = WA.ui.openPopup("tuto", "Vous pouvez à tout moment revenir à l'entrée avec le bouton présent dans le menu, en haut à gauche de votre écran.", [{
                 label: "D'accord !",
                 className: "primary",
                 callback: (popup) => {
@@ -39,17 +40,17 @@ WA.onInit().then(() => {
             }]);
         }
     }]);
+
+    WA.room.onLeaveLayer("Scripts/tuto").subscribe(() => {
+        if (tt1 !== undefined) {
+            tt1.close();
+        }
+        if (tt2 !== undefined) {
+            tt2.close();
+        }
+    });
+
 })
-
-const roofLayerSubscriber = WA.room.onEnterLayer("Scripts/roofScript").subscribe(() => {
-    console.log("ENTER LAYER ROOFSCRIPT");
-    WA.room.hideLayer("Roof");
-});
-
-WA.room.onLeaveLayer("Scripts/roofScript").subscribe(() => {
-    console.log("EXIT LAYER ROOFSCRIPT");
-    WA.room.showLayer("Roof");
-});
 
 /**
  * Conference room
@@ -75,9 +76,9 @@ WA.room.onLeaveLayer(confroomLayerName).subscribe(() => {
 let bedTriggerMessage;
 let bedExitMessage;
 const bedSub = WA.room.onEnterLayer(bedscriptLayerName).subscribe(() => {
-    console.log("ENTER LAYER BESCRIPT");
+    //console.log("ENTER LAYER BESCRIPT");
     bedTriggerMessage = WA.ui.displayActionMessage({
-        message: "press space to go to bed",
+        message: "Appuyez sur \"ESPACE\" pour aller au lit.",
         callback: () => {
             WA.controls.disablePlayerControls();
             WA.room.setTiles([
@@ -88,7 +89,7 @@ const bedSub = WA.room.onEnterLayer(bedscriptLayerName).subscribe(() => {
             WA.player.moveTo(560, 1496, 6).then((result) => {
                 WA.player.moveTo(560, 1512, 6).then((result) => {
                     bedExitMessage = WA.ui.displayActionMessage({
-                        message: "press space to leave the bed",
+                        message: "Appuyez sur \"ESPACE\" pour quitter le lit.",
                         callback: () => {
                             bedExitMessage.remove();
                             WA.player.moveTo(592, 1568, 6).then((result) => {
@@ -107,7 +108,7 @@ const bedSub = WA.room.onEnterLayer(bedscriptLayerName).subscribe(() => {
 });
 
 WA.room.onLeaveLayer(bedscriptLayerName).subscribe(() => {
-    console.log("EXIT LAYER BESCRIPT");
+    //console.log("EXIT LAYER BESCRIPT");
     /*WA.room.setTiles([
         { x: 16, y: 45, tile: 2703, layer: bedscriptLayerName },
         { x: 17, y: 45, tile: 2703, layer: bedscriptLayerName },
@@ -126,6 +127,25 @@ WA.room.onLeaveLayer(bedscriptLayerName).subscribe(() => {
     bedTriggerMessage.remove();
 
 });
+
+
+let bedOOSTriggerMessage;
+const bedSubOOS = WA.room.onEnterLayer(bedscriptOOSLayerName).subscribe(() => {
+    bedOOSTriggerMessage = WA.ui.displayActionMessage({
+        message: "Ce lit est hors service.",
+        callback: () => {
+            console.log("1");
+        }
+
+    });
+
+});
+
+WA.room.onLeaveLayer(bedscriptOOSLayerName).subscribe(() => {
+    bedOOSTriggerMessage.remove();
+
+});
+
 
 /**
  * Custom menus
@@ -153,68 +173,6 @@ WA.room.onLeaveLayer("Scripts/clockScript").subscribe(() => {
     clockPopup.close();
 });
 
-document.addEventListener('keydown', (event) => {
-    console.log("keyevent");
-    const k = event.key;
-    console.log(k);
-}, false);
-
-
-/**
- * Jeu du pendu
- * marche po comme je veux >:(
- */
-/**
-let hangmanPopup;
-WA.room.onEnterLayer("Scripts/hangmanScript").subscribe(() => {
-
-    hangmanPopup = WA.ui.openPopup("hangmanPopup", "Hangman game !", [{
-        label: "Start",
-        className: "primary",
-        callback: (popup) => {
-            WA.state.saveVariable("hg_state", "started").catch(e => console.error("Error saving variable", e));
-            popup.close();
-        }
-    }]);
-
-    document.addEventListener('keydown', (event) => {
-        console.log("keyevent");
-        const k = event.key;
-        console.log(k);
-    }, false);
-});
-
-WA.room.onLeaveLayer("Scripts/hangmanScript").subscribe(() => {
-
-    hangmanPopup.close();
-});
-
-WA.state.onVariableChange('hg_state').subscribe((value) => {
-    console.log("HG STATE CHANGED:", value);
-    switch (value) {
-        case "started":
-            console.log("HG is started");
-            // now we want the user to prompt his word to play with
-            // use the chat, luke
-            //let hangmanPopup2 = WA.ui.openPopup("hangmanPopup", "Entrez le mot à faire deviner dans le chat", []);
-            const hgform = WA.ui.website.open({
-                url: "hangmanForm.html",
-                position: {
-                    vertical: "middle",
-                    horizontal: "middle",
-                },
-                size: {
-                    height: "50vh",
-                    width: "50vw",
-                },
-            });
-            break;
-
-        default:
-            break;
-    }
-});
-*/
 
 /**
  * Boat script
@@ -241,21 +199,25 @@ WA.room.onLeaveLayer("Scripts/boatScript").subscribe(() => {
  * Room names
  */
 const names = {
-    "ASN": "Pôle ASN",
+    "ASN1": "Pôle ASN",
+    "ASN2": "Pôle ASN",
     "RSSI": "Pôle RSSI",
     "REU": "Salle de réunion",
     "CONF": "Salle de conférence",
-    "INFRA": "Pôle Infra",
+    "INFRA1": "Pôle Infra",
+    "INFRA2": "Pôle Infra",
     "DSI": "DSI",
     "PMO": "Pôle PMO",
     "ID": "Pôle ID",
-    "PAUSE": "Salle de pause",
+    "PAUSE1": "Salle de pause",
+    "PAUSE2": "Salle de pause",
     "PROXI": "Pôle Proxi",
     "ADMIN": "Pôle Admin",
     "REPOS": "Salle de repos",
     "CLASSE": "Salle de classe"
 };
 
+/**
 // I love js (no)
 let nmsg;
 Object.keys(names).forEach(key => {
@@ -271,5 +233,21 @@ Object.keys(names).forEach(key => {
 
     WA.room.onLeaveLayer("Info/" + key).subscribe(() => {
         nmsg.remove();
+    });
+});
+*/
+// v2
+let nmsg;
+Object.keys(names).forEach(key => {
+    console.log("item " + key + " is " + names[key]);
+    WA.room.onEnterLayer("Info/" + key).subscribe(() => {
+        console.log("in " + key);
+        nmsg = WA.ui.openPopup(key, names[key], []);
+
+    });
+
+    WA.room.onLeaveLayer("Info/" + key).subscribe(() => {
+        console.log("out " + key);
+        nmsg.close();
     });
 });
